@@ -5,12 +5,12 @@ class SuperKnapsack
   attr_accessor :knapsack
 
   def self.array_sum(arr)
-    arr.reduce (:+)
+    arr.reduce(:+)
   end
 
   def initialize(arr)
     arr.each.with_index do |a, i|
-      unless i==0
+      unless i == 0
         if (a <= self.class.array_sum(arr[0..i-1])) then
           raise(ArgumentError, "not superincreasing at index #{i}")
         end
@@ -19,18 +19,18 @@ class SuperKnapsack
     end
   end
 
-  def primes?(m,n)
-    return Prime.prime?(m) && Prime.prime?(n)
+  def primes?(m, n)
+    Prime.prime?(m) && Prime.prime?(n)
   end
 
   def to_general(m, n)
-    argError = "arguments must both be prime" if (!primes?(m,n))
+    argError = 'arguments must both be prime' if !primes?(m, n)
     argError = "#{n} is smaller than superincreasing knapsack" if n <= @knapsack.last
     raise(ArgumentError, argError) unless argError.nil?
-    @knapsack.map {|a| (a*m)%n }
+    @knapsack.map { |a| (a * m) % n }
   end
 end
-
+#
 class KnapsackCipher
   # Default values of knapsacks, primes
   M = 41
@@ -49,21 +49,20 @@ class KnapsackCipher
     binary = []
     cipher = Array.new(plaintext.length, 0)
     i = 0
-    plaintext.each_char.map{|x| binary << x.ord.to_s(2)}
-    binary = binary.map { |x| '0' * (generalknap.length - x.length) << x if x.length < generalknap.length}
-    # puts binary
-    binary.each_with_index{|bin, idx|
-                bin.each_char{ |x| if x == "1"
-                                    cipher[idx] += generalknap[i]#print x
-                                    end
-                                    i += 1
-                                 if i == generalknap.length
-                                    i = 0
-                                   end
-                                  #  print cipher[idx], "\n"
-                             }
-               }
-      cipher
+    plaintext.each_char.map{|x| binary << x.ord.to_s(2) }
+    binary = binary.map { |x|
+      '0' * (generalknap.length - x.length) << x if x.length < generalknap.length }
+    binary.each_with_index{ |bin, idx|
+                    bin.each_char{ |x|
+                      if x == '1'
+                        cipher[idx] += generalknap[i]
+                      end
+                      i += 1
+                      if i == generalknap.length
+                        i = 0
+                      end
+                    }}
+    cipher
   end
 
   # Decrypts encrypted Array
