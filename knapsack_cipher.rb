@@ -46,6 +46,24 @@ class KnapsackCipher
   # - Array of encrypted numbers
   def self.encrypt(plaintext, generalknap=DEF_GENERAL)
     # TODO: implement this method
+    binary = []
+    cipher = Array.new(plaintext.length, 0)
+    i = 0
+    plaintext.each_char.map{|x| binary << x.ord.to_s(2)}
+    binary = binary.map { |x| '0' * (generalknap.length - x.length) << x if x.length < generalknap.length}
+    # puts binary
+    binary.each_with_index{|bin, idx|
+                bin.each_char{ |x| if x == "1"
+                                    cipher[idx] += generalknap[i]#print x
+                                    end
+                                    i += 1
+                                 if i == generalknap.length
+                                    i = 0
+                                   end
+                                  #  print cipher[idx], "\n"
+                             }
+               }
+      cipher
   end
 
   # Decrypts encrypted Array
@@ -58,8 +76,24 @@ class KnapsackCipher
   # - String of plain text
   def self.decrypt(cipherarray, superknap=DEF_SUPER, m=M, n=N)
     raise(ArgumentError, "Argument should be a SuperKnapsack object"
-      ) unless superknap.is_a? SuperKnapsack
+    ) unless superknap.is_a? SuperKnapsack
 
-    # TODO: implement this method
+      knap = superknap.knapsack.reverse
+      mod_inv = ModularArithmetic.invert(m, n)
+      plain_text = cipherarray.map { |e| e * mod_inv % n }
+      plain_text = plain_text.map { |e| decipher(e, knap) }.join
   end
+
+  def self.decipher( num, knap )
+      ord = knap.map do |x|
+        if num >= x
+          num = num - x
+          1
+          else
+          0
+        end
+      end.reverse.join
+      character = ord.to_i(2).chr
+  end
+
 end
